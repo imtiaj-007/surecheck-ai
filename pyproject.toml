@@ -10,7 +10,13 @@ requires-python = ">=3.10"
 dependencies = []
 
 [dependency-groups]
-dev = []
+dev = [
+    "black (>=25.11.0,<26.0.0)",
+    "ruff (>=0.14.6,<0.15.0)",
+    "mypy (>=1.18.2,<2.0.0)",
+    "poethepoet (>=0.38.0,<0.39.0)",
+    "pre-commit (>=4.5.0,<5.0.0)"
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -23,3 +29,22 @@ documentation = "http://localhost:8000/redoc/"
 
 [tool.poetry]
 package-mode = false
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+extend-exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | alembic
+  | data
+  | uploads
+)/
+'''
