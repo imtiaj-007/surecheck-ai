@@ -1,0 +1,15 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.mypy-type-checker",
+        "ms-python.pytest",
+        "ms-python.isort",
+        "github.vscode-github-actions",
+        "Redis.redis-for-vscode",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml",
+        "usernamehw.errorlens",
+        "mhutchie.git-graph"
+    ]
+}

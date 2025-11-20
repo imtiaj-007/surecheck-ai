@@ -48,3 +48,18 @@ extend-exclude = '''
   | uploads
 )/
 '''
+
+[tool.poe.tasks]
+dev = "uvicorn src.main:app --reload"
+test = "pytest tests/ -v"
+test-cov = "pytest tests/ --cov=src --cov-report=html"
+clean = "find . -type d -name '__pycache__' -exec rm -rf {} +"
+format = "black src tests"
+format-check = "black --check src tests"
+lint-check = "ruff check src tests"
+lint-fix = "ruff check --fix src tests"
+type-check = "mypy src"
+
+[tool.poe.tasks.check-all]
+sequence = ["format-check", "lint-check", "type-check"]
+ignore_fail = false
