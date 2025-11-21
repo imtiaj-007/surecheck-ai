@@ -1,13 +1,13 @@
 [project]
 name = "SureCheckAI"
 version = "0.1.0"
-description = ""
+description = "Intelligent Medical Claims Processing Platform"
 authors = [
     { name = "SK Imtiaj Uddin", email = "imtiaj.kol@gmail.com" }
 ]
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = ["fastapi (>=0.122.0,<0.123.0)", "uvicorn (>=0.38.0,<0.39.0)", "pydantic (>=2.12.4,<3.0.0)", "pydantic-settings (>=2.12.0,<3.0.0)", "python-dotenv (>=1.2.1,<2.0.0)"]
 
 [dependency-groups]
 dev = [
@@ -24,7 +24,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project.urls]
 homepage = "http://localhost:3000/"
-repository = "https://github.com/imtiaj-007/surecheck-ai.git"
+repository = "https://github.com/imtiaj-007/surecheck-ai"
 documentation = "http://localhost:8000/redoc/"
 
 [tool.poetry]
@@ -51,6 +51,7 @@ extend-exclude = '''
 
 [tool.poe.tasks]
 dev = "uvicorn src.main:app --reload"
+start = "python run.py"
 test = "pytest tests/ -v"
 test-cov = "pytest tests/ --cov=src --cov-report=html"
 clean = "find . -type d -name '__pycache__' -exec rm -rf {} +"
