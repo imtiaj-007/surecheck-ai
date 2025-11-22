@@ -36,14 +36,13 @@ target-version = "py312"
 select = ["E", "W", "F", "I", "N", "UP", "B", "RUF"]
 ignore = ["E501"]
 fixable = ["ALL"]
-unfixable = []
 
 [lint.per-file-ignores]
-"__init__.py" = ["E402"]
+"__init__.py" = ["E402", "F401"]
 "**/{tests,docs,tools}/*" = ["E402"]
 
 [format]
-quote-style = "single"
+quote-style = "double"
 indent-style = "space"
 line-ending = "auto"
 docstring-code-format = true

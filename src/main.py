@@ -1,22 +1,68 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+from typing import Any
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(
+from src.core.config import settings
+
+# from src.api.v1 import api_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """
+    Lifespan context manager for startup and shutdown events.
+    Initialize DB connections, check S3, or warm up LLMs.
+    """
+    # Startup logic
+    print(f"🚀 Starting SureCheck AI in {settings.APP_ENV} mode...")
+    print(f"✅ Loaded Settings for: {settings.APP_ENV}")
+
+    yield
+
+    # Shutdown logic
+    print("🛑 Shutting down SureCheck AI...")
+
+
+app: FastAPI = FastAPI(
     title="SureCheck AI",
     summary="Intelligent Medical Claims Processing Platform",
-    description="**SureCheck AI** is an advanced, AI-powered backend system that revolutionizes medical insurance claim processing. Our platform automates the entire claims adjudication workflow—from document ingestion and classification to structured data extraction, cross-validation, and final decision making.",
+    description=(
+        "**SureCheck AI** is an advanced, AI-powered backend system transforming the medical insurance claims process. "
+        "It streamlines the adjudication workflow: document ingestion and classification, structured data extraction, "
+        "cross-validation, and automated decision-making, resulting in faster and more accurate claims processing."
+    ),
     version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
+    lifespan=lifespan,
 )
 
-# Middlewares
-app.add_middleware(CORSMiddleware)
+# Middleware configuration
+app.add_middleware(CORSMiddleware, allow_origins=settings.CORS_ORIGINS, allow_credentials=True)
+
+# Include API Router
+# app.include_router(api_router, prefix=settings.API_PREFIX)
 
 
 @app.get(
-    path="/",
+    "/",
     name="root",
-    summary="Root endpoint",
-    description="Returns the status of the SureCheck API service to confirm it is running properly",
+    summary="Root Endpoint",
+    description="Health check endpoint. Returns the status of the SureCheck API service, confirming the server is operational.",
+    response_model=dict[str, Any],
+    tags=["Health"],
 )
-def root_route():
-    return {"status": "ok", "message": "SureCheck AI is live and running 💉", "version": "0.1.0"}
+async def root_route() -> dict[str, Any]:
+    """
+    Health check endpoint for SureCheck AI API.
+    """
+    return {
+        "status": "ok",
+        "message": "SureCheck AI is live and running 💉",
+        "environment": settings.APP_ENV,
+        "version": app.version,
+    }
