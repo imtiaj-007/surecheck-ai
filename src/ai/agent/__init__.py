@@ -1,3 +1,4 @@
+from .bill_agent import bill_extraction_node
 from .classification_agent import classification_node
 
-__all__ = ["classification_node"]
+__all__ = ["bill_extraction_node", "classification_node"]

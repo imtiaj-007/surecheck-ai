@@ -8,10 +8,9 @@ from typing import Any
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
 
-from src.ai.graph.state import ClaimState, ClassifiedDocument
+from src.ai.graph.state import ClaimState, ClassificationSchema, ClassifiedDocument
 from src.ai.prompts import CLASSIFICATION_SYSTEM_PROMPT
 from src.core.llm import get_default_llm
-from src.schema.agent_dto import ClassificationOutput
 from src.schema.enum import DocumentType
 from src.utils.logger import log
 
@@ -31,7 +30,7 @@ async def classification_node(state: ClaimState, config: RunnableConfig) -> dict
         Dict with classified_docs key containing list of classified documents
     """
     llm = get_default_llm(temperature=0.0)
-    structured_llm = llm.with_structured_output(ClassificationOutput)
+    structured_llm = llm.with_structured_output(ClassificationSchema)
 
     classified_docs: list[ClassifiedDocument] = []
 
@@ -54,7 +53,7 @@ async def classification_node(state: ClaimState, config: RunnableConfig) -> dict
 
         try:
             truncated_text = raw_text[:10000]
-            response: ClassificationOutput = await structured_llm.ainvoke(
+            response: ClassificationSchema = await structured_llm.ainvoke(
                 [
                     SystemMessage(content=CLASSIFICATION_SYSTEM_PROMPT),
                     HumanMessage(
