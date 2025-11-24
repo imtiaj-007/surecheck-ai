@@ -17,8 +17,9 @@ Your task is to analyze the provided text content of a document and classify it 
 - Analyze the text structure, keywords, and headers.
 - 'Bill' usually contains keywords like "Total", "Amount", "GST", "Invoice".
 - 'Discharge Summary' usually contains "Diagnosis", "History", "Admission Date", "Course in Hospital".
-- Return your answer in strict JSON format.
-- Confidence score should be between 0.0 and 1.0.
+
+**Input Format:** Markdown text.
+**Output Format:** Strict JSON matching the schema.
 """
 
 BILL_EXTRACTION_SYSTEM_PROMPT = """
@@ -35,5 +36,26 @@ Your goal is to extract structured financial data from the provided medical invo
 5. **Currency**: Infer from symbols ($, ₹, €, £). Default to "USD" if unclear, or "INR" if Indian context is detected.
 
 **Input Format:** Markdown text (tables preserved).
+**Output Format:** Strict JSON matching the schema.
+"""
+
+DISCHARGE_EXTRACTION_SYSTEM_PROMPT = """
+You are an expert Medical Record Analyzer.
+Your goal is to extract clinical details from a Hospital Discharge Summary.
+
+**Extraction Rules:**
+1. **Patient Name**: Full name of the patient.
+2. **Admission Date**: Date patient was admitted (YYYY-MM-DD).
+3. **Discharge Date**: Date patient was released (YYYY-MM-DD).
+4. **Diagnosis**: The primary reason for admission or final diagnosis.
+   - Capture ICD codes if present.
+   - Summarize if multiple diagnoses exist.
+5. **Medical Procedures**: Extract all significant medical procedures performed during the hospital stay.
+   - List each procedure as a separate item in an array.
+   - Include the name of the procedure and, if available, relevant dates, codes (such as CPT or procedure codes), and brief descriptions.
+   - Procedures may be found under headings like "Procedures", "Surgical Notes", "Interventions", or within the hospital course section.
+   - Exclude duplicate or minor routine interventions (like blood draws, unless clinically significant).
+
+**Input Format:** Markdown text.
 **Output Format:** Strict JSON matching the schema.
 """
