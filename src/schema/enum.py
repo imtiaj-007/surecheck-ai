@@ -21,6 +21,6 @@ class DocStatus(str, Enum):
 
 
 class Severity(str, Enum):
-    CRITICAL = "critical"
-    WARNING = "warning"
-    INFO = "info"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"

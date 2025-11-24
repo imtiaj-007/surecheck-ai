@@ -125,11 +125,7 @@ class ClaimState(BaseModel):
         default_factory=list
     )
     validation_report: ValidationReport | None = None
-
-    # Metadata
     claim_id: str | None = None
-    processing_started_at: str | None = None
-    processing_completed_at: str | None = None
 
     class Config:
         arbitrary_types_allowed = True
