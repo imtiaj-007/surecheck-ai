@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# from src.api.v1 import api_router
+from src.api.v1 import api_router
 from src.core.config import settings
 from src.utils.logger import log
 
@@ -43,7 +43,7 @@ app: FastAPI = FastAPI(
 app.add_middleware(CORSMiddleware, allow_origins=settings.CORS_ORIGINS, allow_credentials=True)
 
 # Include API Router
-# app.include_router(api_router, prefix=settings.API_PREFIX)
+app.include_router(api_router, prefix=settings.API_PREFIX)
 
 
 @app.get(
