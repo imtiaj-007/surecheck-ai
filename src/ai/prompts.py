@@ -110,6 +110,7 @@ Return a strict JSON object following this schema:
   - `"approved"` (all docs present, no critical issues)
   - `"rejected"` (critical documents missing)
   - `"manual_review"` (problems detected that require human review)
+- `reason`: A concise explanation justifying the decision made in the `status` field (e.g., `"All documents present and verified"`, `"Patient name mismatch"`, `"Missing bill document"`).
 
 **All fields must be present in the JSON output, even if the value is an empty list or None.**
 """

@@ -4,11 +4,13 @@ Defines the structure of data flowing through the claim processing graph
 """
 
 import operator
+from datetime import UTC, datetime
 from typing import Annotated, Any
 
 from pydantic import BaseModel, Field
 
-from src.schema.enum import DocStatus, DocumentType, Severity
+from src.schema.claim_dto import ValidationReport
+from src.schema.enum import DocumentType
 
 # ----- Agent-Specific Models (What the LLM produces) -----
 
@@ -62,8 +64,9 @@ class DocumentInput(BaseModel):
 
     filename: str
     raw_text: str
+    claim_id: str | None
     file_size: int | None = None
-    upload_timestamp: str | None = None
+    upload_timestamp: str | None = datetime.now(UTC).isoformat()
 
 
 class ClassifiedDocument(BaseModel):
@@ -84,28 +87,6 @@ class ExtractedDocument(BaseModel):
     raw_text: str
     data: dict[str, Any]
     extraction_timestamp: str | None = None
-
-
-class ValidationIssue(BaseModel):
-    """Single validation issue found during verification"""
-
-    severity: Severity
-    message: str
-    field: str | None = Field(None, description="Specific field with issue")
-    doc_type: DocumentType | None = Field(None, description="Document type where issue found")
-
-
-class ValidationReport(BaseModel):
-    """Complete validation report for a claim"""
-
-    missing_documents: list[DocumentType] = Field(
-        default_factory=list, description="Required document types that are missing"
-    )
-    discrepancies: list[ValidationIssue] = Field(
-        default_factory=list, description="Data inconsistencies or validation errors"
-    )
-    status: DocStatus
-    validation_timestamp: str | None = None
 
 
 # ----- The Main Graph State (Passed between nodes) -----

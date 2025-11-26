@@ -52,7 +52,7 @@ async def id_extraction_node(state: ClaimState, config: RunnableConfig) -> dict[
         raw_text = doc.raw_text
         doc_type = doc.doc_type
 
-        log.info(f"🪪 Extracting insurance details from: {filename}")
+        log.info(f"🪪  Extracting insurance details from: {filename}")
 
         try:
             truncated_text = raw_text[:5000]

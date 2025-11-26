@@ -10,9 +10,10 @@ from typing import Any
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
 
-from src.ai.graph.state import ClaimState, ValidationIssue, ValidationReport
+from src.ai.graph.state import ClaimState
 from src.ai.prompts import CLAIM_VALIDATION_SYSTEM_PROMPT
 from src.core.llm import get_default_llm
+from src.schema.claim_dto import ValidationIssue, ValidationReport
 from src.schema.enum import DocStatus, Severity
 from src.utils.logger import log
 
@@ -44,7 +45,7 @@ async def claim_validation_node(state: ClaimState, config: RunnableConfig) -> di
             {"file_name": doc.filename, "file_type": doc.doc_type, "extracted_data": doc.data}
         )
 
-    log.info("⚖️ Validating Claim consistency...")
+    log.info("⚖️  Validating Claim consistency...")
 
     llm = get_default_llm(temperature=0.0)
     structured_llm = llm.with_structured_output(ValidationReport)
@@ -60,11 +61,12 @@ async def claim_validation_node(state: ClaimState, config: RunnableConfig) -> di
 
         claim_result = ValidationReport(
             status=response.status,
+            reason=response.reason,
             discrepancies=response.discrepancies,
             missing_documents=response.missing_documents,
             validation_timestamp=datetime.now(UTC).isoformat(),
         )
-        log.info(f"👨‍⚖️ Final Decision: {response.status.value}")
+        log.info(f"🔮 Final Decision: {response.status.value}")
 
         return {"validation_report": claim_result}
 
@@ -73,6 +75,7 @@ async def claim_validation_node(state: ClaimState, config: RunnableConfig) -> di
         return {
             "validation_report": ValidationReport(
                 status=DocStatus.MANUAL_REVIEW,
+                reason="Validation could not be completed due to an internal error. Please review manually.",
                 discrepancies=[
                     ValidationIssue(severity=Severity.HIGH, message=f"AI Validation Error: {e!s}")
                 ],
