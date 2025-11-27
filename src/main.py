@@ -5,9 +5,9 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.core.config import settings
-
 # from src.api.v1 import api_router
+from src.core.config import settings
+from src.utils.logger import log
 
 
 @asynccontextmanager
@@ -16,14 +16,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     Lifespan context manager for startup and shutdown events.
     Initialize DB connections, check S3, or warm up LLMs.
     """
-    # Startup logic
-    print(f"🚀 Starting SureCheck AI in {settings.APP_ENV} mode...")
-    print(f"✅ Loaded Settings for: {settings.APP_ENV}")
+    log.info(f"🚀 Starting SureCheck AI in {settings.APP_ENV} mode...")
+    log.info(f"✅ Loaded Settings for: {settings.APP_ENV}")
 
     yield
 
-    # Shutdown logic
-    print("🛑 Shutting down SureCheck AI...")
+    log.info("🛑 Shutting down SureCheck AI...")
 
 
 app: FastAPI = FastAPI(
