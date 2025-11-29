@@ -1,0 +1,51 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: surecheck-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.development
+    environment:
+      - APP_ENV=development
+      - REDIS_URL=redis://redis:6379/0
+      # Ensure python runs in unbuffered mode to see logs immediately
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - api_uploads:/app/uploads
+      - api_logs:/app/logs
+      - api_data:/app/data
+      # Mount source code for hot-reloading during development
+      - ./src:/app/src
+    networks:
+      - surecheck-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: surecheck-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - surecheck-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis_data:
+  api_uploads:
+  api_logs:
+  api_data:
+
+networks:
+  surecheck-network:
+    driver: bridge
