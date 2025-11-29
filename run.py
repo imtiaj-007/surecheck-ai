@@ -15,7 +15,7 @@ def run_server() -> None:
 
     reload = not is_production
     use_colors = False if is_production else True
-    workers = 4 if is_production else 1
+    workers = int(os.getenv("WORKERS", 1))
 
     uvicorn.run(
         "src.main:app",
