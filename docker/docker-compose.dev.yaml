@@ -1,13 +1,13 @@
 services:
-  api:
+  surecheck-ai-dev:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: surecheck-api
+    container_name: surecheck-api-dev
     ports:
       - "8000:8000"
     env_file:
-      - .env.development
+      - ../.env.development
     environment:
       - APP_ENV=development
       - REDIS_URL=redis://redis:6379/0
@@ -21,12 +21,12 @@ services:
       - api_logs:/app/logs
       - api_data:/app/data
       # Mount source code for hot-reloading during development
-      - ./src:/app/src
+      - ../src:/app/src
     networks:
       - surecheck-network
 
   redis:
-    image: redis:7-alpine
+    image: redis:8.4-alpine
     container_name: surecheck-redis
     ports:
       - "6379:6379"

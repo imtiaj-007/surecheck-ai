@@ -1,5 +1,5 @@
 services:
-  api:
+  surecheck-ai:
     build:
       context: ..
       dockerfile: docker/Dockerfile
@@ -23,7 +23,7 @@ services:
       - surecheck-network
 
   redis:
-    image: redis:7-alpine
+    image: redis:8.4-alpine
     container_name: surecheck-redis
     ports:
       - "6379:6379"

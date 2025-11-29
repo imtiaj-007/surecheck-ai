@@ -46,7 +46,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 # Install runtime dependencies and create user
 RUN apt-get update && apt-get install -y \
-    wget \
+    curl \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd -g ${GROUP_ID} appuser \
     && useradd -u ${USER_ID} -g appuser -s /bin/sh -m appuser
@@ -73,7 +73,7 @@ EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8000 || exit 1
+    CMD curl -f http://localhost:8000 || exit 1
 
 # Run the application with dynamic port
 CMD ["python", "run.py"]

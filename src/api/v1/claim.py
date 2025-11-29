@@ -1,8 +1,9 @@
 import gc
 import uuid
 
-from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile, status
 from fastapi.concurrency import run_in_threadpool
+from fastapi_limiter.depends import RateLimiter
 
 from src.ai.graph import claim_graph_app
 from src.ai.graph.state import DocumentInput
@@ -42,6 +43,7 @@ def background_s3_upload(file_bytes: bytes, filename: str, claim_id: str) -> Non
 @router.post(
     "/process-claim",
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(RateLimiter(times=3, seconds=60))],
     response_model=ClaimProcessResponse,
     summary="Process Claim PDFs for AI Extraction & Validation",
     responses={
