@@ -2,11 +2,12 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.v1 import api_router
 from src.core.config import settings
+from src.core.redis import close_redis, init_redis
 from src.utils.logger import log
 
 
@@ -18,10 +19,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     log.info(f"🚀 Starting SureCheck AI in {settings.APP_ENV} mode...")
     log.info(f"✅ Loaded Settings for: {settings.APP_ENV}")
+    await init_redis()
 
     yield
 
     log.info("🛑 Shutting down SureCheck AI...")
+    await close_redis()
 
 
 app: FastAPI = FastAPI(
@@ -49,9 +52,10 @@ app.include_router(api_router, prefix=settings.API_PREFIX)
 @app.get(
     "/",
     name="root",
+    status_code=status.HTTP_200_OK,
+    response_model=dict[str, Any],
     summary="Root Endpoint",
     description="Health check endpoint. Returns the status of the SureCheck API service, confirming the server is operational.",
-    response_model=dict[str, Any],
     tags=["Health"],
 )
 async def root_route() -> dict[str, Any]:

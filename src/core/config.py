@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     AWS_REGION: str = "ap-south-1"
     AWS_BUCKET_NAME: str
 
+    # Redis
+    REDIS_URL: str = "redis://localhost:6379/0"  # Default to localhost, Docker will override
+
+    # LLM Configs
     OPENAI_API_KEY: str = ""
     OPENAI_MODEL: str = "gpt-5"
     GEMINI_API_KEY: str = ""

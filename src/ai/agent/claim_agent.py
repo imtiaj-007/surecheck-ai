@@ -9,6 +9,7 @@ from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
+from langsmith import traceable
 
 from src.ai.graph.state import ClaimState
 from src.ai.prompts import CLAIM_VALIDATION_SYSTEM_PROMPT
@@ -18,6 +19,11 @@ from src.schema.enum import DocStatus, Severity
 from src.utils.logger import log
 
 
+@traceable(
+    name="claim_validation_agent",
+    tags=["dimension:language", "node:claim_validation"],
+    metadata={"dimension": "language", "component": "ClaimValidationNode"},
+)
 async def claim_validation_node(state: ClaimState, config: RunnableConfig) -> dict[str, Any]:
     """
     LangGraph Node: Claim Validation ("The Judge").

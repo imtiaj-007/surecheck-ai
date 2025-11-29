@@ -7,6 +7,7 @@ from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
+from langsmith import traceable
 
 from src.ai.graph.state import ClaimState, ClassificationSchema, ClassifiedDocument
 from src.ai.prompts import CLASSIFICATION_SYSTEM_PROMPT
@@ -15,6 +16,11 @@ from src.schema.enum import DocumentType
 from src.utils.logger import log
 
 
+@traceable(
+    name="classification_agent",
+    tags=["dimension:language", "node:document_classification"],
+    metadata={"dimension": "language", "component": "DocumentClassificationNode"},
+)
 async def classification_node(state: ClaimState, config: RunnableConfig) -> dict[str, Any]:
     """
     LangGraph Node: Classification Agent.
