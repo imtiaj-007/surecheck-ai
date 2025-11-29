@@ -150,7 +150,18 @@ async def process_claim(
     workflow_input = {"inputs": graph_inputs}
 
     try:
-        result = await claim_graph_app.ainvoke(input=workflow_input, print_mode=["updates"])
+        result = await claim_graph_app.ainvoke(
+            input=workflow_input,
+            config={
+                "run_name": "claim_processing_workflow",
+                "tags": ["insurance", "medical-claim", "surecheck-ai"],
+                "metadata": {
+                    "num_files": len(uploaded_files_metadata),
+                    "claim_id": claim_id,
+                    "llm_model": "gemini-2.5-flash",
+                },
+            },
+        )
         validation_report: ValidationReport = result.get("validation_report")
 
         return ClaimProcessResponse(

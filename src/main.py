@@ -2,12 +2,15 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from typing import Any
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.v1 import api_router
 from src.core.config import settings
 from src.utils.logger import log
+
+load_dotenv()
 
 
 @asynccontextmanager

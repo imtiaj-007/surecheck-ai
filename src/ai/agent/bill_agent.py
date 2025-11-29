@@ -8,6 +8,7 @@ from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
+from langsmith import traceable
 
 from src.ai.graph.state import BillSchema, ClaimState, ExtractedDocument
 from src.ai.prompts import BILL_EXTRACTION_SYSTEM_PROMPT
@@ -16,6 +17,11 @@ from src.schema.enum import DocumentType
 from src.utils.logger import log
 
 
+@traceable(
+    name="bill_extraction_agent",
+    tags=["dimension:language", "node:bill_extraction"],
+    metadata={"dimension": "language", "component": "BillExtractionNode"},
+)
 async def bill_extraction_node(state: ClaimState, config: RunnableConfig) -> dict[str, Any]:
     """
     LangGraph Node: Bill Extraction Agent.

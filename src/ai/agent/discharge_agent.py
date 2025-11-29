@@ -9,6 +9,7 @@ from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
+from langsmith import traceable
 
 from src.ai.graph.state import ClaimState, DischargeSummarySchema, ExtractedDocument
 from src.ai.prompts import DISCHARGE_EXTRACTION_SYSTEM_PROMPT
@@ -17,6 +18,11 @@ from src.schema.enum import DocumentType
 from src.utils.logger import log
 
 
+@traceable(
+    name="discharge_extraction_agent",
+    tags=["dimension:language", "node:discharge_extraction"],
+    metadata={"dimension": "language", "component": "DischargeSummaryExtractionNode"},
+)
 async def discharge_extraction_node(state: ClaimState, config: RunnableConfig) -> dict[str, Any]:
     """
     LangGraph Node: Discharge Summary Extraction Agent.

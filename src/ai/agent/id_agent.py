@@ -9,6 +9,7 @@ from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
+from langsmith import traceable
 
 from src.ai.graph.state import ClaimState, ExtractedDocument, IDCardSchema
 from src.ai.prompts import ID_CARD_EXTRACTION_SYSTEM_PROMPT
@@ -17,6 +18,11 @@ from src.schema.enum import DocumentType
 from src.utils.logger import log
 
 
+@traceable(
+    name="id_card_extraction_agent",
+    tags=["dimension:language", "node:id_card_extraction"],
+    metadata={"dimension": "language", "component": "IDCardExtractionNode"},
+)
 async def id_extraction_node(state: ClaimState, config: RunnableConfig) -> dict[str, Any]:
     """
     LangGraph Node: ID Card Extraction Agent.
